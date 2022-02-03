@@ -1,4 +1,4 @@
-/*	BIL_Huntinton_2D_v8.ijm
+/*	BIL_Huntinton_2D_v9.ijm
 	-----------------------
 	Author: 			Marlies Verschuuren -- marlies.verschuuren@uantwerpen.be
 						Building Blocks -- Winnok H. De Vos: CellBlocks_v12.ijm -- winnok.devos@uantwerpen.be
