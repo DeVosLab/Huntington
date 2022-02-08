@@ -3,7 +3,7 @@
 	Author: 			Marlies Verschuuren -- marlies.verschuuren@uantwerpen.be
 						Building Blocks -- Winnok H. De Vos: CellBlocks_v12.ijm -- winnok.devos@uantwerpen.be
 	Date Created: 		2020 - 07 - 07
-	Date Last Modified:	2021 - 12 - 19
+	Date Last Modified:	2022 - 02 - 08
 */
 
 /*  Plugins needed (Help > Update > Manage update sites):
@@ -42,6 +42,7 @@
 		
 	v9: - Add index to log verification stack
 		- Add length as parameter for vessel exclusion
+		-.2 Fix bug loading verification stacks
 */  
 
 //------------------------- Variables -------------------------//
@@ -136,7 +137,7 @@ var minAreaMarker2 			= 50;
 //------------------------- Macro -------------------------//
 macro "[I] Install Macro"{
 	// Only works on my personal drive 
-	run("Install...", "install=[/data/CBH/mverschuuren/ACAM/CF-BIL_TamaraVasilkovska/200401_Huntington/BIL_Huntington_2D_v9.ijm]");
+	run("Install...", "install=[/data/CBH/mverschuuren/ACAM/CF-BIL_TamaraVasilkovska/200401_Huntington/GitHub/Huntington/BIL_Huntington_2D_v9.ijm]");
 }
 
 macro "Split Files Action Tool - Cf88 R0077 C888 R9077 R9977 R0977"{
@@ -743,6 +744,7 @@ macro "Verification Nuclei and Spot Stack Action Tool - C888 T1f16V Taf07N Tff07
 			Stack.setActiveChannels("100111");
 			
 			waitForUser("Next 100 images?");
+			setBatchMode(true);
 			run("Close All");
 			run("Collect Garbage");		
 		}
@@ -808,6 +810,7 @@ macro "Verification Marker SubStack Action Tool - C888 T1f16V Taf07M Tff07S"{
 			Stack.setActiveChannels("011011");
 			
 			waitForUser("Next 100 images?");
+			setBatchMode(true);
 			run("Close All");
 			run("Collect Garbage");		
 		}
