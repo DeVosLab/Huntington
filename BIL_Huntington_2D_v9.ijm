@@ -1806,8 +1806,8 @@ function analyzeMasks(id,idMask,name,ch){
 						}
 					}
 					setResult("Spot_SC"+chSpot+"_Nr",0,number);
-					setResult("Spot_SC"+chSpot+"_"+resultLabels[s]+"_SumPerNuc",0,value);              
-					setResult("Spot_SC"+chSpot+"_"+resultLabels[s]+"_MeanPerNuc",0,value/number);
+					setResult("Spot_SC"+chSpot+"_"+resultLabels[s]+"_Sum",0,value);              
+					setResult("Spot_SC"+chSpot+"_"+resultLabels[s]+"_Mean",0,value/number);
 				}
 			}
 			selectImage(matrix); close;
@@ -1828,6 +1828,7 @@ function analyzeMasks(id,idMask,name,ch){
 }
 
 function summarizeResults(name){
+	
 	// 	open nuclei results
 	run("Results... ", "open=["+dirOutput+name+"_CH"+chNuc+"_Results_Nuc.txt]");
 	nnr 			= nResults;
