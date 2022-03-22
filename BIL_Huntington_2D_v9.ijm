@@ -2306,10 +2306,10 @@ function createOverlayMarkerSubStack(prefixes)
 				selectImage(id);
 				setSlice(nSlices);
 				run("Add Slice","add=channel");
-				if(File.exists(dirOutput+name+"_CH"+chMarker1+"_ROI_Nuc.zip")){	
+				if(File.exists(dirOutput+name+"_CH"+chMarker1+"_ROI.zip")){	
 					selectImage(id);
 					setSlice(nSlices);
-					roiManager("Open",dirOutput+name+"_CH"+chMarker1+"_ROI_Nuc.zip");
+					roiManager("Open",dirOutput+name+"_CH"+chMarker1+"_ROI.zip");
 					roiManager("deselect");
 					roiManager("Fill");
 					roiManager("reset");
