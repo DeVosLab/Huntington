@@ -129,6 +129,7 @@ var maxScaleTubeMarker1 	= 4;
 var threshMarker1 			= "Fixed";	
 var threshMarker1Fix 		= 0.15;
 var minAreaMarker1 			= 50;
+var skeletonMarker1			= true;
 
 //Marker 2 detection
 var gausMarker2				= 2;
@@ -138,6 +139,7 @@ var maxScaleTubeMarker2 	= 4;
 var threshMarker2 			= "Fixed";	
 var threshMarker2Fix 		= 0.2;
 var minAreaMarker2 			= 50;
+var skeletonMarker2			= false;
 
 //------------------------- Macro -------------------------//
 macro "[I] Install Macro"{
@@ -332,8 +334,8 @@ macro "Segment Markers Action Tool -C999 Hff1f1cfcff00"{
 	}
 
 	//Detection
-	idMaskMarker1 = segmentationMask2D (idProj,name,chMarker1,gausMarker1,tubeMarker1,minScaleTubeMarker1, maxScaleTubeMarker1,threshMarker1,threshMarker1Fix, minAreaMarker1,false,true);
-	idMaskMarker2 = segmentationMask2D (idProj,name,chMarker2,gausMarker2,tubeMarker2,minScaleTubeMarker2, maxScaleTubeMarker2,threshMarker2,threshMarker2Fix, minAreaMarker2,false,true);
+	idMaskMarker1 = segmentationMask2D (idProj,name,chMarker1,gausMarker1,tubeMarker1,minScaleTubeMarker1, maxScaleTubeMarker1,threshMarker1,threshMarker1Fix, minAreaMarker1,skeletonMarker1,true);
+	idMaskMarker2 = segmentationMask2D (idProj,name,chMarker2,gausMarker2,tubeMarker2,minScaleTubeMarker2, maxScaleTubeMarker2,threshMarker2,threshMarker2Fix, minAreaMarker2,skeletonMarker2,true);
 
 	//Visualisation
 	roiManager("reset");
@@ -429,10 +431,10 @@ macro "Analyse Single Image Action Tool - C888 T5f161"{
 	if(analysisStack){
 
 		//Marker Detection
-		idMaskMarker1 = segmentationMask2D (idMax,prefix,chMarker1,gausMarker1,tubeMarker1,minScaleTubeMarker1, maxScaleTubeMarker1,threshMarker1,threshMarker1Fix, minAreaMarker1,true,true);
+		idMaskMarker1 = segmentationMask2D (idMax,prefix,chMarker1,gausMarker1,tubeMarker1,minScaleTubeMarker1, maxScaleTubeMarker1,threshMarker1,threshMarker1Fix, minAreaMarker1,skeletonMarker1,true);
 		selectImage(idMaskMarker1);
 		rename("maskMarker1");
-		idMaskMarker2 = segmentationMask2D (idMax,prefix,chMarker2,gausMarker2,tubeMarker2,minScaleTubeMarker2,maxScaleTubeMarker2,threshMarker2,threshMarker2Fix, minAreaMarker2,false,true);
+		idMaskMarker2 = segmentationMask2D (idMax,prefix,chMarker2,gausMarker2,tubeMarker2,minScaleTubeMarker2,maxScaleTubeMarker2,threshMarker2,threshMarker2Fix, minAreaMarker2,skeletonMarker2,true);
 		selectImage(idMaskMarker2);
 		rename("maskMarker2");
 	
@@ -643,10 +645,10 @@ macro "Batch Analysis Action Tool - C888 T5f16#"{
 
 		if(analysisStack){
 			//Marker detection
-			idMaskMarker1 = segmentationMask2D (idMax,prefix,chMarker1,gausMarker1,tubeMarker1,minScaleTubeMarker1, maxScaleTubeMarker1,threshMarker1,threshMarker1Fix, minAreaMarker1,true,true);
+			idMaskMarker1 = segmentationMask2D (idMax,prefix,chMarker1,gausMarker1,tubeMarker1,minScaleTubeMarker1, maxScaleTubeMarker1,threshMarker1,threshMarker1Fix, minAreaMarker1,skeletonMarker1,true);
 			selectImage(idMaskMarker1);
 			rename("maskMarker1");
-			idMaskMarker2 = segmentationMask2D (idMax,prefix,chMarker2,gausMarker2,tubeMarker2,minScaleTubeMarker2,maxScaleTubeMarker2,threshMarker2,threshMarker2Fix, minAreaMarker2,false,true);
+			idMaskMarker2 = segmentationMask2D (idMax,prefix,chMarker2,gausMarker2,tubeMarker2,minScaleTubeMarker2,maxScaleTubeMarker2,threshMarker2,threshMarker2Fix, minAreaMarker2,skeletonMarker2,true);
 			selectImage(idMaskMarker2);
 			rename("maskMarker2");
 	
@@ -1027,6 +1029,8 @@ function setup(){
 	Dialog.setInsets(0,0,0);
 	Dialog.addNumber("Minimum Area ", minAreaMarker1, 2, 5, micron+"2");
 	Dialog.setInsets(0,0,0);
+	Dialog.addCheckbox("Skeletonisation", skeletonMarker1);
+	Dialog.setInsets(0,0,0);
 	Dialog.addMessage("--------------------------------------------------   Marker 2 Segmentation  --------------------------------------------------", 14, "#ff0000");
 	Dialog.setInsets(0,0,0);	
 	Dialog.addMessage("Preprocessing:\n",12,"#ff0000");
@@ -1051,15 +1055,18 @@ function setup(){
 	Dialog.setInsets(0,0,0);
 	Dialog.addNumber("Minimum Area ", minAreaMarker2, 2, 5, micron+"2");
 	Dialog.setInsets(0,0,0);
+	Dialog.addCheckbox("Skeletonisation", skeletonMarker2);
+	Dialog.setInsets(0,0,0);
 	Dialog.show();
 
-	gausMarker1		= Dialog.getNumber();	print("Blur radius lectin/GFAP:",gausMarker1);
-	tubeMarker1		= Dialog.getCheckbox();		print("Edge enhancement lectin/GFAP:",tubeMarker1);
-	minScaleTubeMarker1= Dialog.getNumber();		print("Min Scale Tube enhancement lectin/GFAP:",minScaleTubeMarker1);
-	maxScaleTubeMarker1= Dialog.getNumber();		print("Max Scale Tube enhancement lectin/GFAP:",maxScaleTubeMarker1);
-	threshMarker1	= Dialog.getChoice();		print("Auto Threshold lectin/GFAP:",threshMarker1);
-	threshMarker1Fix	= Dialog.getNumber();		print("Fixed Threshold lectin/GFAP:",threshMarker1Fix);
-	minAreaMarker1	= Dialog.getNumber();		print("Min area lectin/GFAP:",minAreaMarker1);
+	gausMarker1		= Dialog.getNumber();	print("Blur radius Marker1:",gausMarker1);
+	tubeMarker1		= Dialog.getCheckbox();		print("Edge enhancement Marker1:",tubeMarker1);
+	minScaleTubeMarker1= Dialog.getNumber();		print("Min Scale Tube enhancement Marker1:",minScaleTubeMarker1);
+	maxScaleTubeMarker1= Dialog.getNumber();		print("Max Scale Tube enhancement Marker1:",maxScaleTubeMarker1);
+	threshMarker1	= Dialog.getChoice();		print("Auto Threshold Marker1:",threshMarker1);
+	threshMarker1Fix	= Dialog.getNumber();		print("Fixed Threshold Marker1:",threshMarker1Fix);
+	minAreaMarker1	= Dialog.getNumber();		print("Min area Marker1:",minAreaMarker1);
+	skeletonMarker1	= Dialog.getCheckbox();		print("Skeletonisation Marker1: ", skeletonMarker1); 
 	
 	gausMarker2		= Dialog.getNumber();		print("Blur radius Marker2:",gausMarker2);
 	tubeMarker2		= Dialog.getCheckbox();		print("Edge enhancement Marker2:",tubeMarker2);
@@ -1068,6 +1075,7 @@ function setup(){
 	threshMarker2	= Dialog.getChoice();		print("Auto Threshold Marker2:",threshMarker2);
 	threshMarker2Fix	= Dialog.getNumber();		print("Fixed Threshold Marker2:",threshMarker2Fix);
 	minAreaMarker2	= Dialog.getNumber();		print("Min area Marker2:",minAreaMarker2);
+	skeletonMarker2	= Dialog.getCheckbox();		print("Skeletonisation Marker2: ", skeletonMarker2); 
 	print("--------------------");
 }
 
@@ -1451,7 +1459,7 @@ function segmentationSpots2D (id,name, booleanDebug){
 	return countSpots;
 }
 
-function segmentationMask2D (id,name,ch,gaus,tube,minScaleTube,maxScaleTube,threshMet,threshFix,minArea, booleanSkeleton, saveRoiList){
+function segmentationMask2D (id,name,ch,gaus,tube,minScaleTube,maxScaleTube,threshMet,threshFix, minArea, booleanSkeleton, saveRoiList){
 	selectImage(id);
 	roiManager("reset");
 	if(Stack.isHyperstack){
@@ -1567,12 +1575,12 @@ function segmentationMask2D (id,name,ch,gaus,tube,minScaleTube,maxScaleTube,thre
 		run("Distance Map");
 
 		selectImage(idSkeleton);
-		run("Analyze Skeleton (2D/3D)", "prune=none show display");
+		run("Analyze Skeleton (2D/3D)", "prune=none calculate show display");
 
 		selectWindow("Branch information");
-		saveAs("Results",dirOutput+name+"_CH"+ch+"_SkeletonDetails.txt");
+		saveAs("Results",dirOutput+name+"_CH"+ch+"_Skeleton_Details.txt");
 		run("Close");
-		
+
 		selectWindow("Tagged skeleton"); close();
 		selectWindow("Skeleton-labeled-skeletons");
 		idSkeletonResult=getImageID();
@@ -1628,6 +1636,30 @@ function segmentationMask2D (id,name,ch,gaus,tube,minScaleTube,maxScaleTube,thre
 				run("Close");
 			}
 			selectImage(idMatrix); close();
+			roiManager("reset");
+					
+			selectWindow("Longest shortest paths");
+			//setThreshold(152, 255);
+			setOption("BlackBackground", false);
+			run("Convert to Mask");
+			run("Set Measurements...", "area mean min redirect=None decimal=4");
+			run("Analyze Particles...", "size=2-Infinity pixel display clear add");
+
+			count=roiManager("count");
+			if(count>0){
+				for(i=0;i<count;i++){
+					value= getResult("Area", i)/pixelSize;
+					setResult("Length", i, value);
+				}
+				saveAs("Results",dirOutput+name+"_CH"+ch+"_Skeleton_Branches.txt");
+				run("Close");
+				selectWindow("Longest shortest paths");
+				run("Close");
+			}else{
+				if(File.exists(dirOutput+name+"_CH"+ch+"_Skeleton_Branches.txt")){
+					File.delete(dirOutput+name+"_CH"+ch+"_Skeleton_Branches.txt");
+				}
+			}
 		}else{
 			if(File.exists(dirOutput+name+"_CH"+ch+"_Skeleton.zip")){
 				File.delete(dirOutput+name+"_CH"+ch+"_Skeleton.zip");
@@ -1635,8 +1667,11 @@ function segmentationMask2D (id,name,ch,gaus,tube,minScaleTube,maxScaleTube,thre
 			if(File.exists(dirOutput+name+"_CH"+ch+"_Skeleton.txt")){
 				File.delete(dirOutput+name+"_CH"+ch+"_Skeleton.txt");
 			}
-			if(File.exists(dirOutput+name+"_CH"+ch+"_SkeletonDetails.txt")){
-				File.delete(dirOutput+name+"_CH"+ch+"_SkeletonDetails.txt");
+			if(File.exists(dirOutput+name+"_CH"+ch+"_Skeleton_Details.txt")){
+				File.delete(dirOutput+name+"_CH"+ch+"_Skeleton_Details.txt");
+			}
+			if(File.exists(dirOutput+name+"_CH"+ch+"_Skeleton_Branches.txt")){
+				File.delete(dirOutput+name+"_CH"+ch+"_Skeleton_Branches.txt");
 			}
 		}
 		selectImage(idSkeleton); close();
